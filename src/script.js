@@ -31,13 +31,22 @@ const parametres = {
 let geometry = null;
 let material = null;
 let points = null;
+let galaxyContainer = null;
+
+
+
+//Group
+galaxyContainer = new THREE.Group();
+scene.add(galaxyContainer)
 
 const generateGalaxy = () => {
   //Destroy old galaxy
+  galaxyContainer.remove(points)
 
   if(points != null){
     geometry.dispose();
     material.dispose();
+    // galaxyContainer.dispose()
     scene.remove(points);
   }
 
@@ -99,10 +108,13 @@ const generateGalaxy = () => {
 
   //Points
   points = new THREE.Points(geometry, material);
-  scene.add(points);
+  // scene.add(points);
+  
+  galaxyContainer.add(points)
 }
 
 generateGalaxy();
+
 
 gui.add(parametres,'count').min(100).max(1000000).step(100).onFinishChange(generateGalaxy)
 gui.add(parametres,'size').min(0.001).max(0.1).step(0.001).onFinishChange(generateGalaxy)
@@ -169,6 +181,9 @@ const tick = () => {
 
   // Update controls
   controls.update()
+
+  //galaxy rotation
+  galaxyContainer.rotation.y = 0.1 * elapsedTime
 
   // Render
   renderer.render(scene, camera)
